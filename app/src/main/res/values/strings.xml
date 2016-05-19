@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">EddyTooth</string>
+    <string name="title_activity_eddy_tooth_beacon">EddyToothBeacon</string>
+    <string name="eddystone_advertising">Eddystone Advertising is</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
+</resources>
