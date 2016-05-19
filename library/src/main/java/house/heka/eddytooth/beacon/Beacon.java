@@ -2,9 +2,6 @@ package house.heka.eddytooth.beacon;
 
 import android.util.Log;
 
-/**
- * Created by aron on 5/18/16.
- */
 public class Beacon {
     private static final String TAG = "Beacon";
     public String deviceAddress;

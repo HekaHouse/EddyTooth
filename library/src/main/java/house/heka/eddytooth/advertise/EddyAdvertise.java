@@ -18,7 +18,6 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import house.heka.eddytooth.example.EddyToothBeacon;
 
 /**
  * Created by aron on 5/18/16.

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import house.heka.eddytooth.advertise.EddyAdvertise;
+import house.heka.eddytooth.beacon.Beacon;
 
 public class EddyScanService extends Service {
 
@@ -202,7 +203,7 @@ public class EddyScanService extends Service {
             byte frameType = data[0];
             switch (frameType) {
                 case TYPE_UID:
-                    final String id = beacon.Beacon.getInstanceId(data);
+                    final String id = Beacon.getInstanceId(data);
 
                     mCallbackHandler.post(new Runnable() {
                         @Override
@@ -213,8 +214,8 @@ public class EddyScanService extends Service {
                     break;
                 case TYPE_TLM:
                     //Parse out battery voltage
-                    final float battery = beacon.Beacon.getTlmBattery(data);
-                    final float temp = beacon.Beacon.getTlmTemperature(data);
+                    final float battery = Beacon.getTlmBattery(data);
+                    final float temp = Beacon.getTlmTemperature(data);
                     mCallbackHandler.post(new Runnable() {
                         @Override
                         public void run() {

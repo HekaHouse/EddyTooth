@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import house.heka.eddytooth.beacon.Beacon;
+
 /**
  * Created by aron on 5/18/16.
  */
@@ -87,7 +89,7 @@ public class EddyScan implements
     private Runnable mPruneTask = new Runnable() {
         @Override
         public void run() {
-            final ArrayList<beacon.Beacon> expiredBeacons = new ArrayList<>();
+            final ArrayList<Beacon> expiredBeacons = new ArrayList<>();
             final long now = System.currentTimeMillis();
             for (house.heka.eddytooth.beacon.Beacon beacon : mContext.getBeacons()) {
                 long delta = now - beacon.lastDetectedTimestamp;
@@ -124,7 +126,7 @@ public class EddyScan implements
     @Override
     public void onBeaconIdentifier(String deviceAddress, int rssi, String instanceId) {
         final long now = System.currentTimeMillis();
-        for (beacon.Beacon item : mContext.getBeacons()) {
+        for (Beacon item : mContext.getBeacons()) {
             if (instanceId.equals(item.id)) {
                 //Already have this one, make sure device info is up to date
                 item.update(deviceAddress, rssi, now);
@@ -134,14 +136,14 @@ public class EddyScan implements
         }
 
         //New beacon, add it
-        beacon.Beacon beacon = new beacon.Beacon(deviceAddress, rssi, instanceId, now);
+        Beacon beacon = new Beacon(deviceAddress, rssi, instanceId, now);
         mContext.addBeacon(beacon);
         mContext.notifyChanges();
     }
 
     @Override
     public void onBeaconTelemetry(String deviceAddress, float battery, float temperature) {
-        for (beacon.Beacon item : mContext.getBeacons()) {
+        for (Beacon item : mContext.getBeacons()) {
             if (deviceAddress.equals(item.deviceAddress)) {
                 //Found it, update voltage
                 item.battery = battery;
