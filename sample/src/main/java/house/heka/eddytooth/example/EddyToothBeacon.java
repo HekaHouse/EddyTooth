@@ -1,43 +1,34 @@
 package house.heka.eddytooth.example;
 
-import android.Manifest;
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseSettings;
-import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import house.heka.eddytooth.scan.EddyScanActivity;
-import house.heka.eddytooth.R;
-import house.heka.eddytooth.advertise.EddyAdvertise;
+
+
 
 public class EddyToothBeacon extends EddyScanActivity {
 
     private static final int BT_PERMISSION = 19;
     private static final String TAG = "EddyToothBeacon";
-    private EddyAdvertise mEddyAdvert;
+    private Advertise advert;
 
-
+    private static final String DEFAULT_URL = "http://goo.gl/BhqDJb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eddy_tooth_beacon);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, BT_PERMISSION);
-        } else {
-            constructEddy();
-        }
+
+
+        advert = new Advertise(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.toggleEddy);
         assert fab != null;
@@ -59,41 +50,25 @@ public class EddyToothBeacon extends EddyScanActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mEddyAdvert.isStarted()) {
-            mEddyAdvert.stopAdvertising();
-        }
+        if (advert.isAdvertising())
+            advert.stopAdvert();
     }
 
 
 
-    private void constructEddy() {
-        final TextView statusText = (TextView) findViewById(R.id.advertising_status);
-        assert statusText != null;
-        mEddyAdvert = new EddyAdvertise(this, new AdvertiseCallback() {
-            @Override
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                super.onStartSuccess(settingsInEffect);
-                statusText.setText(R.string.on);
-            }
 
-            @Override
-            public void onStartFailure(int errorCode) {
-                super.onStartFailure(errorCode);
-                statusText.setText(R.string.off);
-                EddyAdvertise.processFailureCallback(errorCode);
-            }
-        });
-    }
 
 
     public void toggleAdvertising() {
         TextView statusText = (TextView) findViewById(R.id.advertising_status);
         assert statusText != null;
-        if (mEddyAdvert.isStarted()) {
-            mEddyAdvert.stopAdvertising();
+        if (advert.isAdvertising()) {
+            advert.stopAdvert();
             statusText.setText(R.string.off);
         } else {
-            mEddyAdvert.startAdvertising(this);
+            Uri uri = Uri.parse(DEFAULT_URL);
+            advert.startAdvert();
+            //advert.startAdvert(uri);
             statusText.setText(R.string.on);
         }
     }
