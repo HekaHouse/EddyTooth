@@ -15,6 +15,7 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     protected BeaconAdapter mBeaconAdapter;
     private ArrayList<Beacon> mAdapterItems;
     protected EddyScan mScanner;
+    protected boolean beaconBroadcastIsActive;
 
 
     @Override
@@ -58,5 +59,9 @@ public abstract class EddyScanActivity extends AppCompatActivity {
 
     public void addBeacon(Beacon beacon) {
         mAdapterItems.add(beacon);
+    }
+
+    public void setBeaconStatus(boolean b) {
+        beaconBroadcastIsActive = b;
     }
 }

@@ -11,20 +11,23 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+
+import house.heka.eddytooth.beacon.UriBeacon;
 
 
-/**
- * Created by aron on 5/18/16.
- */
 public class EddyAdvertise {
 
     private static final byte FRAME_TYPE_UID = 0x00;
+    public static final byte FRAME_TYPE_URL = 0x10;
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
 
@@ -34,14 +37,14 @@ public class EddyAdvertise {
 
     private static final String TAG = "EddyAdvertise";
 
-    private static final String DEFAULT_NAMESPACE = "01020304050607080910";
-    private static final String DEFAULT_INSTANCE = "01020304050607080910";
+    private static final String DEFAULT_NAMESPACE = "17237217237217237217";
+    private static final String DEFAULT_INSTANCE = "172372172372";
 
     private final AdvertiseCallback advertiseCallback;
 
     private BluetoothLeAdvertiser adv;
 
-    private int txPowerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_HIGH;
+    private int txPowerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW;
     private int advertiseMode = AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY;
 
     private String uid_namespace;
@@ -133,6 +136,27 @@ public class EddyAdvertise {
         isStarted = true;
     }
 
+    public void startAdvertising(Uri uri, Context c) {
+        if (adv == null) return;
+
+        AdvertiseSettings advertiseSettings = getAdvertiseUriSettings();
+
+
+        AdvertiseData advertiseData = null;
+
+        try {
+            advertiseData = getAdvertiseUriData(uri);
+        } catch (IOException | URISyntaxException e) {
+            Log.e(TAG, e.toString());
+            Toast.makeText(c, "failed to build advertising data", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+        adv.startAdvertising(advertiseSettings, advertiseData, advertiseCallback);
+        isStarted = true;
+    }
+
     public void stopAdvertising() {
         Log.i(TAG, "Stopping ADV");
         adv.stopAdvertising(advertiseCallback);
@@ -144,12 +168,22 @@ public class EddyAdvertise {
         return uid_namespace;
     }
 
-    public void setUid_namespace(String uid_namespace) {
-        if (!isValidHex(uid_namespace, 10)) {
+    //namespace must be 20 characters [0-9A-F]
+    public void setUid_namespace(String _namespace) {
+        if (_namespace.length() < 20) {
+            Log.e(TAG, "padding namespace to reach 20 characters");
+            while (_namespace.length() < 20) {
+                _namespace = _namespace + "0";
+            }
+        }
+        if (_namespace.matches(".*?[^0-9A-F].*") || _namespace.length() > 20) {
+            Log.e(TAG, "namespace must be 20 [0-9A-F]");
+            _namespace = _namespace.replaceAll("[^0-9A-F]", "0").substring(0, 20);
+        }
+        if (!isValidHex(_namespace, 10)) {
             Log.e(TAG, "not 10-byte hex");
-            return;
         } else {
-            this.uid_namespace = uid_namespace;
+            this.uid_namespace = _namespace;
         }
 
     }
@@ -158,12 +192,23 @@ public class EddyAdvertise {
         return uid_instance;
     }
 
-    public void setUid_instance(String uid_instance) {
-        if (!isValidHex(uid_instance, 6)) {
+
+    //instance must be 12 characters [0-9A-F]
+    public void setUid_instance(String _instance) {
+        if (_instance.length() < 12) {
+            Log.e(TAG, "padding instance to reach 12 characters");
+            while (_instance.length() < 12) {
+                _instance = _instance + "0";
+            }
+        }
+        if (_instance.matches(".*?[^0-9A-F].*") || _instance.length() > 12) {
+            Log.e(TAG, "instance must be 12 [0-9A-F]");
+            _instance = _instance.replaceAll("[^0-9A-F]", "0").substring(0, 12);
+        }
+        if (!isValidHex(_instance, 6)) {
             Log.e(TAG, "not 6-byte hex");
-            return;
         } else {
-            this.uid_instance = uid_instance;
+            this.uid_instance = _instance;
         }
     }
 
@@ -244,11 +289,30 @@ public class EddyAdvertise {
                 .build();
     }
 
+    private AdvertiseData getAdvertiseUriData(Uri uri) throws IOException, URISyntaxException {
+        return new AdvertiseData.Builder()
+                .setIncludeDeviceName(false)
+                .setIncludeTxPowerLevel(false)
+                .addServiceUuid(SERVICE_UUID)
+                .addServiceData(SERVICE_UUID, buildDataPacket(uri))
+                .build();
+    }
+
+
     private AdvertiseSettings getAdvertiseSettings() {
         return new AdvertiseSettings.Builder()
                 .setAdvertiseMode(advertiseMode)
                 .setTxPowerLevel(txPowerLevel)
                 .setConnectable(true)
+                .build();
+    }
+
+    private AdvertiseSettings getAdvertiseUriSettings() {
+        return new AdvertiseSettings.Builder()
+                .setAdvertiseMode(advertiseMode)
+                .setTxPowerLevel(txPowerLevel)
+                .setConnectable(false)
+                .setTimeout(0)
                 .build();
     }
 
@@ -261,6 +325,28 @@ public class EddyAdvertise {
         os.write(namespaceBytes);
         os.write(instanceBytes);
         return os.toByteArray();
+    }
+
+    private byte[] buildDataPacket(Uri uri) throws URISyntaxException {
+        //We cannot read the TX power from Android. This uses a sane default.
+        UriBeacon model = new UriBeacon.Builder()
+                .uriString(uri.toString())
+                .build();
+        byte[] uriBytes = model.getUriBytes();
+        //Flags + Power + URI
+        ByteBuffer buffer = ByteBuffer.allocateDirect(1 + 1 + uriBytes.length);
+        buffer.put(FRAME_TYPE_URL);
+        buffer.put(model.getTxPowerLevel()); // This is cheating…we don't really know it
+        buffer.put(uriBytes);
+
+        return byteBufferToArray(buffer);
+    }
+
+    private static byte[] byteBufferToArray(ByteBuffer bb) {
+        byte[] bytes = new byte[bb.position()];
+        bb.rewind();
+        bb.get(bytes, 0, bytes.length);
+        return bytes;
     }
 
     private byte[] toByteArray(String hexString) {
