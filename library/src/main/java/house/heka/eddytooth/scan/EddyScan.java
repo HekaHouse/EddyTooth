@@ -48,9 +48,10 @@ public class EddyScan implements
 
     public void disconnect() {
         mHandler.removeCallbacks(mPruneTask);
-        if (mService != null)
+        if (mService != null) {
             mService.setBeaconEventListener(null);
-        mContext.unbindService(this);
+            mContext.unbindService(this);
+        }
     }
 
     /* Verify Bluetooth Support */
