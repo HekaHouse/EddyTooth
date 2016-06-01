@@ -45,6 +45,7 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         mScanner.disconnect();
     }
 
