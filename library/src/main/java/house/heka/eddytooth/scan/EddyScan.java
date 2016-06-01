@@ -31,6 +31,7 @@ public class EddyScan implements
 
     private static final int EXPIRE_TIMEOUT = 5000;
     private static final int EXPIRE_TASK_PERIOD = 1000;
+    private boolean isBinding=false;
 
     public EddyScan(EddyScanActivity a) {
         mContext = a;
@@ -48,9 +49,13 @@ public class EddyScan implements
 
     public void disconnect() {
         mHandler.removeCallbacks(mPruneTask);
-        if (mService != null) {
-            mService.setBeaconEventListener(null);
-            mContext.unbindService(this);
+        if (mService != null &! isBinding) {
+            try {
+                mService.setBeaconEventListener(null);
+                mContext.unbindService(this);
+            } catch(IllegalArgumentException e) {
+                Log.d(TAG,"EddyScan Service is not bound");
+            }
         }
     }
 
@@ -113,8 +118,10 @@ public class EddyScan implements
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d(TAG, "Connected to scanner service");
+        isBinding = true;
         mService = ((EddyScanService.LocalBinder) service).getService();
         mService.setBeaconEventListener(this);
+        isBinding = false;
     }
 
     @Override
