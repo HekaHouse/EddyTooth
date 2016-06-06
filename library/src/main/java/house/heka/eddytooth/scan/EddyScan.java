@@ -27,7 +27,7 @@ public class EddyScan implements
 
     private EddyScanService mService;
 
-
+    public static final int ENABLING_BLUETOOTH = 1723;
 
     private static final int EXPIRE_TIMEOUT = 5000;
     private static final int EXPIRE_TASK_PERIOD = 1000;
@@ -71,8 +71,8 @@ public class EddyScan implements
         if (adapter == null || !adapter.isEnabled()) {
             //Bluetooth is disabled
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            mContext.startActivity(enableBtIntent);
-            mContext.finish();
+            mContext.startActivityForResult(enableBtIntent,ENABLING_BLUETOOTH);
+            //mContext.finish();
             return false;
         }
 
