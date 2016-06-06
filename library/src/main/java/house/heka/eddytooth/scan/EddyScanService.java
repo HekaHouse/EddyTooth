@@ -140,7 +140,11 @@ public class EddyScanService extends Service {
 
     /* Terminate scanning */
     private void stopScanning() {
-        mBluetoothLeScanner.stopScan(mScanCallback);
+        try {
+            mBluetoothLeScanner.stopScan(mScanCallback);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, e.getMessage());
+        }
         if (DEBUG_SCAN) Log.d(TAG, "Scanning stopped…");
     }
 
