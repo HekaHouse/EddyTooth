@@ -69,7 +69,17 @@ public class Advertise implements IAdvertise {
 
     @Override
     public void setInstance(String newInstance) {
+        while(newInstance.length() < 11)
+            newInstance = newInstance + "0";
         this.mInstance = newInstance.toUpperCase().replaceAll("[^0-9A-Z]", "0").substring(0, 11);
+        reconstruct();
+    }
+
+    @Override
+    public void setNamespace(String newNamespace) {
+        while(newNamespace.length() < 19)
+            newNamespace = newNamespace + "0";
+        this.mNamespace = newNamespace.toUpperCase().replaceAll("[^0-9A-Z]", "0").substring(0, 19);
         reconstruct();
     }
 

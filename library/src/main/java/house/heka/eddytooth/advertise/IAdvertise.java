@@ -28,6 +28,8 @@ public interface IAdvertise {
 
     void setInstance(String newInstance);
 
+    void setNamespace(String newNamespace);
+
     void stopAdvert();
 
     void startAdvert();
