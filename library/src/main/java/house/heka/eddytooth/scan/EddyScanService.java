@@ -25,21 +25,21 @@ public class EddyScanService extends Service {
 
     private static final String TAG = "EddyScanService";
     // …if you feel like making the log a bit noisier…
-    private static boolean DEBUG_SCAN = false;
+    private static boolean DEBUG_SCAN = true;
 
     // Eddystone service uuid (0xfeaa)
     private static final ParcelUuid UID_SERVICE =
             ParcelUuid.fromString("0000feaa-0000-1000-8000-00805f9b34fb");
 
     // Default namespace id for KST EddyAdvertise beacons (d89bed6e130ee5cf1ba1)
-    private static final byte[] NAMESPACE_FILTER = EddyAdvertise.getDefaultNamespace();
-//            {
-//            0x00, //Frame type
-//            0x00, //TX power
-//            (byte)0xd8, (byte)0x9b, (byte)0xed, (byte)0x6e, (byte)0x13,
-//            (byte)0x0e, (byte)0xe5, (byte)0xcf, (byte)0x1b, (byte)0xa1,
-//            0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-//    };
+    private static final byte[] NAMESPACE_FILTER = //EddyAdvertise.getDefaultNamespace();
+            {
+            0x00, //Frame type
+            0x00, //TX power
+            (byte)0xd8, (byte)0x9b, (byte)0xed, (byte)0x6e, (byte)0x13,
+            (byte)0x0e, (byte)0xe5, (byte)0xcf, (byte)0x1b, (byte)0xa1,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
 
     // Force frame type and namespace id to match
     private static final byte[] NAMESPACE_FILTER_MASK = {
