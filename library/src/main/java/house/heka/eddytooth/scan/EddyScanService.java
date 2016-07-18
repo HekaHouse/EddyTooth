@@ -118,7 +118,7 @@ public class EddyScanService extends Service {
     private void startScanning() {
         ScanFilter beaconFilter = new ScanFilter.Builder()
                 .setServiceUuid(UID_SERVICE)
-                .setServiceData(UID_SERVICE, NAMESPACE_FILTER, NAMESPACE_FILTER_MASK)
+//                .setServiceData(UID_SERVICE, NAMESPACE_FILTER, NAMESPACE_FILTER_MASK)
                 .build();
 
         ScanFilter telemetryFilter = new ScanFilter.Builder()
