@@ -200,8 +200,12 @@ public class EddyScanService extends Service {
             if (data == null) {
 
                 Log.w(TAG, "Invalid Eddystone scan result:");
-                for (ParcelUuid uuid: result.getScanRecord().getServiceUuids()) {
-                    Log.w(TAG, "\tUUID:"+uuid);
+                if (result.getScanRecord().getServiceUuids() != null) {
+                    for (ParcelUuid uuid : result.getScanRecord().getServiceUuids()) {
+                        Log.w(TAG, "\tUUID:" + uuid);
+                    }
+                } else {
+                    Log.w(TAG, "\tUUID not present");
                 }
                 return;
             }
