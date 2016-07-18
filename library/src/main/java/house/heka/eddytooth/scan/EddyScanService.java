@@ -117,7 +117,7 @@ public class EddyScanService extends Service {
     /* Being scanning for Eddystone advertisers */
     private void startScanning() {
         ScanFilter beaconFilter = new ScanFilter.Builder()
-                .setServiceUuid(UID_SERVICE)
+//                .setServiceUuid(UID_SERVICE)
 //                .setServiceData(UID_SERVICE, NAMESPACE_FILTER, NAMESPACE_FILTER_MASK)
                 .build();
 
@@ -134,7 +134,7 @@ public class EddyScanService extends Service {
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
 
-        mBluetoothLeScanner.startScan(filters, settings, mScanCallback);
+        mBluetoothLeScanner.startScan(null, settings, mScanCallback);
         if (DEBUG_SCAN) Log.d(TAG, "Scanning started…");
     }
 
