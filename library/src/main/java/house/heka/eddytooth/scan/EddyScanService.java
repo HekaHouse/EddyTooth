@@ -198,10 +198,10 @@ public class EddyScanService extends Service {
         private void processResult(ScanResult result) {
             byte[] data = result.getScanRecord().getServiceData(UID_SERVICE);
             if (data == null) {
-                ParcelUuid[] uuids= result.getDevice().getUuids();
+
                 Log.w(TAG, "Invalid Eddystone scan result:");
-                for (ParcelUuid uuid: uuids) {
-                    Log.w(TAG, "\tUUID:"+uuid.getUuid().toString());
+                for (ParcelUuid uuid: result.getScanRecord().getServiceUuids()) {
+                    Log.w(TAG, "\tUUID:"+uuid);
                 }
                 return;
             }
