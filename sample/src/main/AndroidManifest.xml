@@ -1,12 +1,12 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="house.heka.eddytooth.example">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="house.heka.eddytooth.highly">
 
     <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name" android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-        <activity android:name=".EddyToothBeacon"
+        <activity android:name="house.heka.eddytooth.highly.Contiguous"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
         <intent-filter>

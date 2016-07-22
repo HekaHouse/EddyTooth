@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "38679012718",
+    "firebase_url": "https://contiguous-fa3e1.firebaseio.com",
+    "project_id": "contiguous-fa3e1",
+    "storage_bucket": "contiguous-fa3e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38679012718:android:aeef1447e57d60ac",
+        "android_client_info": {
+          "package_name": "house.heka.eddytooth.highly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38679012718-qr3e2unum1h3lk0pckf17qb1iqkqk7ap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFwcC2NYmJEy0ohFzQ-Fsa-nrkTjAAbTI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

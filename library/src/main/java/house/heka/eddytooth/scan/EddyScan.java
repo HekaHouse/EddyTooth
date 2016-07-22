@@ -29,16 +29,18 @@ public class EddyScan implements
 
     public static final int ENABLING_BLUETOOTH = 1723;
 
-    private static final int EXPIRE_TIMEOUT = 5000;
+    private static final int EXPIRE_TIMEOUT = 1000*45;
     private static final int EXPIRE_TASK_PERIOD = 1000;
     private boolean isBinding=false;
+    private String mNamespace;
 
     public EddyScan(EddyScanActivity a) {
         mContext = a;
     }
 
 
-    public void getScanService() {
+    public void getScanService(String namespace) {
+        mNamespace = namespace;
         if (checkBluetoothStatus()) {
             Intent intent = new Intent(mContext, EddyScanService.class);
             mContext.bindService(intent, this, Activity.BIND_AUTO_CREATE);
@@ -121,6 +123,7 @@ public class EddyScan implements
         isBinding = true;
         mService = ((EddyScanService.LocalBinder) service).getService();
         mService.setBeaconEventListener(this);
+        mService.setNamespace(mNamespace);
         isBinding = false;
     }
 
@@ -134,14 +137,7 @@ public class EddyScan implements
     @Override
     public void onBeaconIdentifier(String deviceAddress, int rssi, String instanceId) {
         final long now = System.currentTimeMillis();
-        for (Beacon item : mContext.getBeacons()) {
-            if (instanceId.equals(item.id)) {
-                //Already have this one, make sure device info is up to date
-                item.update(deviceAddress, rssi, now);
-                mContext.notifyChanges();
-                return;
-            }
-        }
+
 
         //New beacon, add it
         Beacon beacon = new Beacon(deviceAddress, rssi, instanceId, now);

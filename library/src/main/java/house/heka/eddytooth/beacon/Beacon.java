@@ -15,11 +15,16 @@ public class Beacon {
     public Beacon(String address, int rssi, String identifier, long timestamp) {
         this.deviceAddress = address;
         this.latestRssi = rssi;
-        this.id = identifier;
+        this.id = identifier.toUpperCase();
         this.lastDetectedTimestamp = timestamp;
 
         this.battery = -1f;
         this.temperature = -1f;
+    }
+
+    @Override
+    public boolean equals(Object object2) {
+        return object2 instanceof Beacon && id.equals(((Beacon)object2).id);
     }
 
     public void update(String address, int rssi, long timestamp) {
@@ -34,6 +39,20 @@ public class Beacon {
                 id, latestRssi,
                 battery < 0f ? "N/A" : String.format("%.1fV", battery),
                 temperature < 0f ? "N/A" : String.format("%.1fC", temperature));
+    }
+
+    // Parse the instance id out of a UID packet
+    public static String getNamespace(byte[] data) {
+        StringBuilder sb = new StringBuilder();
+
+        //UID packets are always 18 bytes in length
+        //Parse out the first 12 bytes for the namespace and trim off first 2
+        int offset = 2;
+        for (int i=offset; i < 12; i++) {
+            sb.append(Integer.toHexString(data[i] & 0xFF));
+        }
+
+        return sb.toString();
     }
 
     // Parse the instance id out of a UID packet

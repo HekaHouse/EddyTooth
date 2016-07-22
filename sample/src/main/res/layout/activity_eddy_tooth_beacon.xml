@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="house.heka.eddytooth.example.EddyToothBeacon">
+    tools:context="house.heka.eddytooth.highly.Contiguous">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

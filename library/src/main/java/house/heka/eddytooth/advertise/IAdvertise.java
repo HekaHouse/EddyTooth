@@ -37,4 +37,6 @@ public interface IAdvertise {
     void startAdvert(Uri uri);
 
     boolean isAdvertising();
+
+    String getNamespace();
 }

@@ -16,7 +16,7 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     private ArrayList<Beacon> mAdapterItems;
     protected EddyScan mScanner;
     protected boolean beaconBroadcastIsActive;
-
+    protected String namespace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +30,13 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     }
     public void buildAdapter() {
         mAdapterItems = new ArrayList<>();
-        mBeaconAdapter = new BeaconAdapter(this,
-                android.R.layout.simple_list_item_1,
-                mAdapterItems);
+        mBeaconAdapter = new BeaconAdapter(mAdapterItems);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mScanner.getScanService();
+        mScanner.getScanService(namespace);
     }
 
 
@@ -59,7 +57,8 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     }
 
     public void addBeacon(Beacon beacon) {
-        mAdapterItems.add(beacon);
+        if (!mAdapterItems.contains(beacon))
+            mAdapterItems.add(beacon);
     }
 
     public void setBeaconStatus(boolean b) {

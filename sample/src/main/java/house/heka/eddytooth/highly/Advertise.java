@@ -1,11 +1,19 @@
-package house.heka.eddytooth.example;
+package house.heka.eddytooth.highly;
 
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.net.Uri;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
+
 import house.heka.eddytooth.advertise.EddyAdvertise;
 import house.heka.eddytooth.advertise.IAdvertise;
+import house.heka.eddytooth.highly.firebase.AppInstance;
 import house.heka.eddytooth.scan.EddyScanActivity;
 
 
@@ -22,15 +30,15 @@ public class Advertise implements IAdvertise {
 
     public Advertise(EddyScanActivity es) {
         mActive = es;
-
-        constructEddyAdvertise();
     }
 
 
-    private void reconstruct() {
+    private void reconstruct(boolean andStart) {
         constructEddyAdvertise();
-        if (mEddyAdvert.isStarted()) {
+        if (mEddyAdvert.isStarted() && andStart) {
             stopAdvert();
+            startAdvert();
+        } else if (andStart) {
             startAdvert();
         }
     }
@@ -58,29 +66,52 @@ public class Advertise implements IAdvertise {
     @Override
     public void setAdvertiseMode(int advertiseMode) {
         mEddyAdvert.setAdvertiseMode(advertiseMode);
-        reconstruct();
+        reconstruct(false);
     }
 
     @Override
     public void setTxPowerLevel(int txPowerLevel) {
         mEddyAdvert.setTxPowerLevel(txPowerLevel);
-        reconstruct();
+        reconstruct(false);
     }
 
     @Override
     public void setInstance(String newInstance) {
-        while(newInstance.length() < 11)
+        while(newInstance.length() < 12)
             newInstance = newInstance + "0";
-        this.mInstance = newInstance.toUpperCase().replaceAll("[^0-9A-Z]", "0").substring(0, 11);
-        reconstruct();
+        this.mInstance = newInstance.toUpperCase().replaceAll("[^0-9A-F]", "0").substring(0, 12);
+        reconstruct(false);
     }
 
     @Override
     public void setNamespace(String newNamespace) {
-        while(newNamespace.length() < 19)
+        while(newNamespace.length() < 20)
             newNamespace = newNamespace + "0";
-        this.mNamespace = newNamespace.toUpperCase().replaceAll("[^0-9A-Z]", "0").substring(0, 19);
-        reconstruct();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        this.mNamespace = newNamespace.toUpperCase().replaceAll("[^0-9A-F]", "0").substring(0, 20);
+
+
+        final DatabaseReference ref = database.getReference("appInstance/" + mInstance);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                AppInstance me = dataSnapshot.getValue(AppInstance.class);
+                if (me == null) {
+                    me = new AppInstance();
+                    me.instanceId = mInstance;
+                    ref.setValue(me);
+                }
+                ref.child("lastSeen").setValue(ServerValue.TIMESTAMP);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        reconstruct(true);
     }
 
     @Override
@@ -103,5 +134,10 @@ public class Advertise implements IAdvertise {
     @Override
     public boolean isAdvertising() {
         return mEddyAdvert.isStarted();
+    }
+
+    @Override
+    public String getNamespace() {
+        return mNamespace;
     }
 }

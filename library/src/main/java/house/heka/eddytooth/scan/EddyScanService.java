@@ -25,7 +25,7 @@ public class EddyScanService extends Service {
 
     private static final String TAG = "EddyScanService";
     // …if you feel like making the log a bit noisier…
-    private static boolean DEBUG_SCAN = true;
+    private static boolean DEBUG_SCAN = false;
 
     // Eddystone service uuid (0xfeaa)
     private static final ParcelUuid UID_SERVICE =
@@ -69,6 +69,12 @@ public class EddyScanService extends Service {
     private static final byte TYPE_UID = 0x00;
     private static final byte TYPE_URL = 0x10;
     private static final byte TYPE_TLM = 0x20;
+
+    private String mNamespace;
+
+    public void setNamespace(String namespace) {
+        mNamespace = namespace;
+    }
 
     //Callback interface for the UI
     public interface OnBeaconEventListener {
@@ -117,8 +123,8 @@ public class EddyScanService extends Service {
     /* Being scanning for Eddystone advertisers */
     private void startScanning() {
         ScanFilter beaconFilter = new ScanFilter.Builder()
-//                .setServiceUuid(UID_SERVICE)
-//                .setServiceData(UID_SERVICE, NAMESPACE_FILTER, NAMESPACE_FILTER_MASK)
+                .setServiceUuid(UID_SERVICE)
+                .setServiceData(UID_SERVICE, NAMESPACE_FILTER, NAMESPACE_FILTER_MASK)
                 .build();
 
         ScanFilter telemetryFilter = new ScanFilter.Builder()
@@ -150,9 +156,8 @@ public class EddyScanService extends Service {
 
     /* Handle UID packet discovery on the main thread */
     private void processUidPacket(String deviceAddress, int rssi, String id) {
-        if (DEBUG_SCAN) {
-            Log.d(TAG, "Eddystone(" + deviceAddress + ") id = " + id);
-        }
+        Log.d(TAG, "Eddystone(" + deviceAddress + ") id = " + id);
+
 
         if (mBeaconEventListener != null) {
             mBeaconEventListener
@@ -196,19 +201,14 @@ public class EddyScanService extends Service {
         }
 
         private void processResult(ScanResult result) {
+
             byte[] data = result.getScanRecord().getServiceData(UID_SERVICE);
             if (data == null) {
-
-                Log.w(TAG, "Invalid Eddystone scan result:");
-                if (result.getScanRecord().getServiceUuids() != null) {
-                    for (ParcelUuid uuid : result.getScanRecord().getServiceUuids()) {
-                        Log.w(TAG, "\tUUID:" + uuid);
-                    }
-                } else {
-                    Log.w(TAG, "\tUUID not present");
-                }
+                //Log.w(TAG, "Invalid Eddystone scan result...");
                 return;
             }
+
+
 
             final String deviceAddress = result.getDevice().getAddress();
             final int rssi = result.getRssi();
@@ -216,13 +216,17 @@ public class EddyScanService extends Service {
             switch (frameType) {
                 case TYPE_UID:
                     final String id = Beacon.getInstanceId(data);
-
-                    mCallbackHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            processUidPacket(deviceAddress, rssi, id);
+                    if (Beacon.getNamespace(data) != null && Beacon.getNamespace(data).length() >= 11) {
+                        final String namespace = Beacon.getNamespace(data).substring(0, 10);
+                        if (mNamespace != null && namespace.equals(mNamespace.substring(0, 10))) {
+                            mCallbackHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    processUidPacket(deviceAddress, rssi, id);
+                                }
+                            });
                         }
-                    });
+                    }
                     break;
                 case TYPE_TLM:
                     //Parse out battery voltage

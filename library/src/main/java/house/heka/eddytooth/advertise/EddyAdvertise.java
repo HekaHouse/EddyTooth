@@ -44,8 +44,8 @@ public class EddyAdvertise {
 
     private BluetoothLeAdvertiser adv;
 
-    private int txPowerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW;
-    private int advertiseMode = AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY;
+    private int txPowerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
+    private int advertiseMode = AdvertiseSettings.ADVERTISE_MODE_BALANCED;
 
     private String uid_namespace;
     private String uid_instance;
@@ -185,7 +185,7 @@ public class EddyAdvertise {
         } else {
             this.uid_namespace = _namespace;
         }
-
+        Log.d(TAG,"namespace set:"+uid_namespace);
     }
 
     public String getUid_instance() {
@@ -210,6 +210,7 @@ public class EddyAdvertise {
         } else {
             this.uid_instance = _instance;
         }
+        Log.d(TAG,"instance set:"+uid_instance);
     }
 
     public int getTxPowerLevel() {
@@ -319,6 +320,9 @@ public class EddyAdvertise {
     private byte[] buildServiceData() throws IOException {
         byte txPower = txPowerLevelToByteValue();
         byte[] namespaceBytes = toByteArray(getUid_namespace());
+
+        Log.d(TAG,new String(namespaceBytes));
+
         byte[] instanceBytes = toByteArray(getUid_instance());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         os.write(new byte[]{FRAME_TYPE_UID, txPower});
