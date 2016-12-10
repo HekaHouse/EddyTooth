@@ -164,9 +164,7 @@ public class Contiguous extends EddyScanActivity {
         try {
             instance = SHA1(InstanceID.getInstance(Contiguous.this).getId()).substring(0,12).toUpperCase();
             namespace = SHA1(getString(R.string.heka_house)).replaceAll("[^0-9A-Fa-f]","0").substring(0,20);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
