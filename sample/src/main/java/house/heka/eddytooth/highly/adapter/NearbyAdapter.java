@@ -41,7 +41,7 @@ public class NearbyAdapter extends BeaconAdapter {
                     return;
                 } else {
                     if (!isSet) {
-                        mActive.setNearbyPhoto(holder.beaconImage, peer.instanceId);
+                        //mActive.setNearbyPhoto(holder.beaconImage, peer.instanceId);
                         isSet = true;
                     }
                     if (peer.tag != null && peer.tag.length() > 0)
@@ -52,9 +52,9 @@ public class NearbyAdapter extends BeaconAdapter {
                     holder.beaconCard.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            mActive.requestPeerSession(chosen);
-                            mActive.onUserChosen(chosen);
-                            mActive.buildMessageAdapter(peer);
+//                            mActive.requestPeerSession(chosen);
+//                            mActive.onUserChosen(chosen);
+//                            mActive.buildMessageAdapter(peer);
                         }
                     });
 

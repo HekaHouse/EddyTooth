@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import house.heka.eddytooth.highly.Contiguous;
 import house.heka.eddytooth.highly.R;
 import house.heka.eddytooth.highly.firebase.PeerMessage;
-import house.heka.themis.LocalPref;
+
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
@@ -41,11 +41,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public void onBindViewHolder(MessageHolder holder, int position) {
         if (peerMessages.get(position).isLocal) {
             holder.remoteCard.setVisibility(View.GONE);
-            mActive.setNearbyPhoto(holder.localImage, LocalPref.getStringPref(mActive,"instanceID"));
+            //mActive.setNearbyPhoto(holder.localImage, LocalPref.getStringPref(mActive,"instanceID"));
             holder.localMessage.setText(peerMessages.get(position).decMessage);
         } else {
             holder.localCard.setVisibility(View.GONE);
-            mActive.setNearbyPhoto(holder.remoteImage, peerMessages.get(position).from);
+            //mActive.setNearbyPhoto(holder.remoteImage, peerMessages.get(position).from);
             holder.remoteMessage.setText(peerMessages.get(position).decMessage);
             //messySnapshot.getRef().removeValue();
         }

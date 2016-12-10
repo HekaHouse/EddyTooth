@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/EddyTooth.iml" filepath="$PROJECT_DIR$/EddyTooth.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/libsodium-jni/libsodium-jni.iml" filepath="$PROJECT_DIR$/libsodium-jni/libsodium-jni.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libsodium-jni/libsodium-jni.iml" filepath="$PROJECT_DIR$/libsodium-jni/libsodium-jni.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>
   </component>
 </project>

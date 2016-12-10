@@ -102,13 +102,13 @@ public class SecureComm extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        recList.setAdapter(((Contiguous)getActivity()).mMessageAdapter);
+        //recList.setAdapter(((Contiguous)getActivity()).mMessageAdapter);
         return view;
     }
 
 
     public void onSendMessage(AppInstance chosen, String message) {
-        ((Contiguous)getActivity()).sendPeerMessage(chosen,message);
+        //((Contiguous)getActivity()).sendPeerMessage(chosen,message);
     }
 
     @Override

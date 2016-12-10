@@ -18,9 +18,7 @@ import house.heka.eddytooth.advertise.EddyAdvertise;
 import house.heka.eddytooth.advertise.IAdvertise;
 import house.heka.eddytooth.highly.firebase.AppInstance;
 import house.heka.eddytooth.scan.EddyScanActivity;
-import house.heka.themis.Encrypt;
-import house.heka.themis.EphemeralKeyPair;
-import house.heka.themis.LocalPref;
+
 
 
 public class Advertise implements IAdvertise {
@@ -112,12 +110,10 @@ public class Advertise implements IAdvertise {
                     ref.setValue(me);
                 }
 
-                try {
-                    EphemeralKeyPair ekp = Encrypt.generateEphemeralKeys(mActive);
+
+                    //EphemeralKeyPair ekp = Encrypt.generateEphemeralKeys(mActive);
                     ref.child("lastSeen").setValue(ServerValue.TIMESTAMP);
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                }
+
 
 
             }

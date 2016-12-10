@@ -1,1 +1,1 @@
-include ':library', ':libsodium-jni'
+include ':library', ':libsodium-jni', ':sample'

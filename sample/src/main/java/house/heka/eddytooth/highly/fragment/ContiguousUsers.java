@@ -50,7 +50,7 @@ public class ContiguousUsers extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        recList.setAdapter(((Contiguous)getActivity()).getBeaconAdapter());
+        //recList.setAdapter(((Contiguous)getActivity()).getBeaconAdapter());
 
         return v;
     }
