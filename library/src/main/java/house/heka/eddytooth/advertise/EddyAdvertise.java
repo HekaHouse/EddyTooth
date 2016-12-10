@@ -195,6 +195,7 @@ public class EddyAdvertise {
 
     //instance must be 12 characters [0-9A-F]
     public void setUid_instance(String _instance) {
+        String orig = _instance;
         if (_instance.length() < 12) {
             Log.e(TAG, "padding instance to reach 12 characters");
             while (_instance.length() < 12) {
@@ -211,6 +212,8 @@ public class EddyAdvertise {
             this.uid_instance = _instance;
         }
         Log.d(TAG,"instance set:"+uid_instance);
+        if (!orig.equals(uid_instance))
+            Log.d(TAG,"fail");
     }
 
     public int getTxPowerLevel() {

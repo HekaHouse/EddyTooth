@@ -15,7 +15,7 @@ import house.heka.eddytooth.R;
  * Created by aron on 5/18/16.
  */
 public class BeaconAdapter extends RecyclerView.Adapter<BeaconHolder> {
-    private final ArrayList<Beacon> mBeacons;
+    protected final ArrayList<Beacon> mBeacons;
 
     public BeaconAdapter(ArrayList<Beacon> beacons) {
         mBeacons = beacons;

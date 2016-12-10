@@ -3,6 +3,7 @@ package house.heka.eddytooth.highly;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,15 +12,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.GeneralSecurityException;
+
 import house.heka.eddytooth.advertise.EddyAdvertise;
 import house.heka.eddytooth.advertise.IAdvertise;
 import house.heka.eddytooth.highly.firebase.AppInstance;
 import house.heka.eddytooth.scan.EddyScanActivity;
+import house.heka.themis.Encrypt;
+import house.heka.themis.EphemeralKeyPair;
+import house.heka.themis.LocalPref;
 
 
 public class Advertise implements IAdvertise {
     private static final String TAG = "Advertise";
-    private final EddyScanActivity mActive;
+    private final Contiguous mActive;
 
     private EddyAdvertise mEddyAdvert;
     private String mNamespace = "23721723721723721723";
@@ -28,7 +34,7 @@ public class Advertise implements IAdvertise {
 
     private String mInstance = "237217237217";
 
-    public Advertise(EddyScanActivity es) {
+    public Advertise(Contiguous es) {
         mActive = es;
     }
 
@@ -61,6 +67,8 @@ public class Advertise implements IAdvertise {
                         EddyAdvertise.processFailureCallback(errorCode);
                     }
                 });
+        Log.d(TAG,String.valueOf(mEddyAdvert.getUid_instance().equals(mInstance)));
+        Log.d(TAG,"");
     }
 
     @Override
@@ -79,7 +87,7 @@ public class Advertise implements IAdvertise {
     public void setInstance(String newInstance) {
         while(newInstance.length() < 12)
             newInstance = newInstance + "0";
-        this.mInstance = newInstance.toUpperCase().replaceAll("[^0-9A-F]", "0").substring(0, 12);
+        this.mInstance = newInstance.toUpperCase().replaceAll("[^0-9A-F]", "0").replaceAll("0","F").substring(0, 12);
         reconstruct(false);
     }
 
@@ -103,9 +111,16 @@ public class Advertise implements IAdvertise {
                     me.instanceId = mInstance;
                     ref.setValue(me);
                 }
-                ref.child("lastSeen").setValue(ServerValue.TIMESTAMP);
-            }
 
+                try {
+                    EphemeralKeyPair ekp = Encrypt.generateEphemeralKeys(mActive);
+                    ref.child("lastSeen").setValue(ServerValue.TIMESTAMP);
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -139,5 +154,9 @@ public class Advertise implements IAdvertise {
     @Override
     public String getNamespace() {
         return mNamespace;
+    }
+
+    public String getInstance() {
+        return mInstance;
     }
 }

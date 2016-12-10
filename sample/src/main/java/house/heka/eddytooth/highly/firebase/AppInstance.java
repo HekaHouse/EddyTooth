@@ -9,4 +9,5 @@ import java.util.Map;
 public class AppInstance {
     public String instanceId;
     public long lastSeen;
+    public String tag;
 }

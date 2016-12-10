@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">sample</string>
-    <string name="heka_house">liber.us</string>
+    <string name="heka_house">heka.house</string>
+    <string name="anonymous">anonymous</string>
+    <string name="tag">tag</string>
+    <string name="say_something">Say something</string>
+    <string name="send">send</string>
+    <string name="cancel">cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="message">message</string>
 </resources>

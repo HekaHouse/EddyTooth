@@ -4,13 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="house.heka.eddytooth.highly.Contiguous"
-    tools:showIn="@layout/activity_eddy_tooth_beacon">
+    tools:context="house.heka.eddytooth.highly.fragment.SecureComm">
     <TextView
         android:id="@+id/advertising_desc"
         android:layout_width="wrap_content"
@@ -30,6 +26,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/discovery_results"
         android:layout_marginTop="64dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:padding="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

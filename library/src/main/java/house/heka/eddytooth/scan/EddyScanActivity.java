@@ -13,7 +13,7 @@ import house.heka.eddytooth.beacon.BeaconAdapter;
  */
 public abstract class EddyScanActivity extends AppCompatActivity {
     protected BeaconAdapter mBeaconAdapter;
-    private ArrayList<Beacon> mAdapterItems;
+    protected ArrayList<Beacon> mBeacons;
     protected EddyScan mScanner;
     protected boolean beaconBroadcastIsActive;
     protected String namespace;
@@ -21,16 +21,18 @@ public abstract class EddyScanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        buildAdapter();
+        buildBeaconAdapter();
         mScanner = new EddyScan(this);
     }
 
     public void notifyChanges() {
         mBeaconAdapter.notifyDataSetChanged();
     }
-    public void buildAdapter() {
-        mAdapterItems = new ArrayList<>();
-        mBeaconAdapter = new BeaconAdapter(mAdapterItems);
+
+
+    public void buildBeaconAdapter() {
+        mBeacons = new ArrayList<>();
+        mBeaconAdapter = new BeaconAdapter(mBeacons);
     }
 
     @Override
@@ -49,16 +51,16 @@ public abstract class EddyScanActivity extends AppCompatActivity {
 
 
     public void removeAll(ArrayList<Beacon> expiredBeacons) {
-        mAdapterItems.removeAll(expiredBeacons);
+        mBeacons.removeAll(expiredBeacons);
     }
 
     public ArrayList<Beacon> getBeacons() {
-        return mAdapterItems;
+        return mBeacons;
     }
 
     public void addBeacon(Beacon beacon) {
-        if (!mAdapterItems.contains(beacon))
-            mAdapterItems.add(beacon);
+        if (!mBeacons.contains(beacon))
+            mBeacons.add(beacon);
     }
 
     public void setBeaconStatus(boolean b) {
